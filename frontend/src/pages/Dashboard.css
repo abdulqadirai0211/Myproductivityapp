@@ -1,0 +1,117 @@
+.dashboard .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-input);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.task-item:hover {
+    background: var(--bg-card-hover);
+}
+
+.task-item.completed {
+    opacity: 0.5;
+}
+
+.task-item.overdue {
+    border-left: 3px solid var(--danger);
+}
+
+.task-check {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--text-muted);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.7rem;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.task-check:hover {
+    border-color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.task-check.checked {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+.task-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.task-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-item.completed .task-title {
+    text-decoration: line-through;
+}
+
+.task-goal {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.task-date {
+    font-size: 0.7rem;
+    color: var(--danger);
+}
+
+.ai-response {
+    padding: 16px;
+    background: var(--bg-input);
+    border-radius: var(--radius-md);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.goals-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.goal-cat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-input);
+    border-radius: var(--radius-sm);
+}
+
+.goal-cat-label {
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    color: var(--text-secondary);
+}
+
+.goal-cat-count {
+    font-weight: 700;
+    color: var(--accent-primary);
+}
