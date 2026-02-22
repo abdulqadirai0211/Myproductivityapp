@@ -1,0 +1,161 @@
+.date-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 12px 0;
+}
+
+.date-display {
+    text-align: center;
+}
+
+.date-display h2 {
+    font-size: 1.1rem;
+}
+
+.date-stats {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.schedule-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 16px;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.time-block {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--block-color, var(--accent-primary));
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    animation: slideUp 0.3s ease;
+}
+
+.time-block:hover {
+    border-color: var(--border-hover);
+}
+
+.time-block.completed {
+    opacity: 0.6;
+    border-left-color: #22c55e;
+}
+
+.time-block.completed .block-title {
+    text-decoration: line-through;
+}
+
+.block-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    min-width: 50px;
+}
+
+.block-time-divider {
+    font-size: 0.6rem;
+    margin: 2px 0;
+}
+
+.block-content {
+    flex: 1;
+}
+
+.block-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.block-icon {
+    font-size: 1.1rem;
+}
+
+.block-title {
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+.block-notes {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.block-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pomodoro-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    margin-bottom: 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.85;
+    }
+}
+
+.pomodoro-label {
+    font-weight: 600;
+}
+
+.pomodoro-time {
+    font-size: 1.8rem;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    flex: 1;
+    text-align: center;
+    color: #ef4444;
+}
+
+.cat-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.cat-stat:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .schedule-layout {
+        grid-template-columns: 1fr;
+    }
+}

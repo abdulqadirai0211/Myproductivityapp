@@ -1,0 +1,158 @@
+.income-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.income-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-input);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+}
+
+.breakdown-amount {
+    font-weight: 700;
+    color: #22c55e;
+}
+
+.trend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+    padding: 10px 0;
+}
+
+.trend-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.trend-bar {
+    width: 100%;
+    background: linear-gradient(to top, var(--accent-primary), var(--accent-secondary));
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: height 0.3s ease;
+}
+
+.trend-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.entry-card {
+    padding: 14px 16px;
+}
+
+.entry-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.entry-icon {
+    font-size: 1.3rem;
+}
+
+.entry-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.entry-source {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.entry-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.entry-client {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.entry-right {
+    text-align: right;
+}
+
+.entry-amount {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #22c55e;
+    display: block;
+}
+
+.entry-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.goal-card {
+    padding: 20px;
+}
+
+.goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.goal-target {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.goal-current {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #22c55e;
+}
+
+.goal-divider {
+    color: var(--text-muted);
+}
+
+.goal-total {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .income-grid {
+        grid-template-columns: 1fr;
+    }
+}

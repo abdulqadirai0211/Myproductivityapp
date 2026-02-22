@@ -1,76 +1,156 @@
 """Content Suggestion Agent — suggests daily post topics based on learnings, 
-projects, and latest AI/Tech news from DuckDuckGo search."""
+projects, and latest AI/Tech news via DuckDuckGo search."""
 
 from services.llm_service import quick_llm_call
 import json
-import os
+import logging
+
+logger = logging.getLogger("mytracker.agents.content")
 
 SYSTEM_PROMPT = """You are a content strategy advisor specializing in AI/ML, Python, and tech content creation.
 
 You help users decide what to post on LinkedIn, Medium, and social media (Reels/Shorts).
 
-Based on the user's learnings, projects, interests, AND the latest AI/Tech news, suggest:
+IMPORTANT FORMATTING RULES:
+- Do NOT use markdown tables. They render poorly in the UI.
+- Use headers (##, ###), bullet points, and bold text instead.
+- Keep each suggestion concise — title, hook, and 3-4 bullet points max.
+- Use emojis for visual breaks.
+
+Structure your response EXACTLY like this:
 
 ## 📱 Today's Post Ideas
 
-### LinkedIn (1-2 ideas)
-- Professional insights, learnings, project updates
-- Include a hook line and key talking points
+### 💼 LinkedIn Post #1
+**Title:** [Specific title]
+**Hook:** "[First 1-2 lines that grab attention]"
+- Key point 1
+- Key point 2
+- Key point 3
 
-### Medium / Blog (1 idea)  
-- In-depth technical article idea
-- Include title, outline, and target audience
+### 💼 LinkedIn Post #2
+**Title:** [Specific title]
+**Hook:** "[First 1-2 lines]"
+- Key point 1
+- Key point 2
 
-### Reels / Shorts (2-3 ideas)
-- Quick tips, code snippets, tool demos
-- Include the visual concept and hook
+### ✍️ Medium Article
+**Title:** "[Full article title]"
+**Hook:** "[Opening paragraph hook]"
+**Outline:**
+1. Section 1 — brief description
+2. Section 2 — brief description
+3. Section 3 — brief description
+**Target audience:** [who should read this]
 
-## 🔥 Trending Topics (Based on Latest News)
-- What's hot in AI/ML right now that the user should create content about
-- Specific tools, frameworks, papers, launches, or news
-- How the user can relate their learnings to these trends
+### 🎬 Reel #1
+**Hook (first 3s):** "[What you say/show]"
+**Visual:** [What's on screen]
+**Core message:** [1 line takeaway]
+
+### 🎬 Reel #2
+**Hook:** "[What you say/show]"
+**Visual:** [What's on screen]
+**Core message:** [1 line takeaway]
+
+### 🎬 Reel #3
+**Hook:** "[What you say/show]"
+**Visual:** [What's on screen]
+**Core message:** [1 line takeaway]
+
+## 🔥 Trending Topics (from Latest News)
+
+### 1. [Trend Name]
+- **Why it matters:** [1 line]
+- **Your angle:** [How user can tie their skills to this]
+
+### 2. [Trend Name]
+- **Why it matters:** [1 line]
+- **Your angle:** [How to create content about this]
+
+### 3. [Trend Name]
+- **Why it matters:** [1 line]
+- **Your angle:** [Specific content idea]
 
 ## 📅 Weekly Content Calendar
-- Suggest a simple Mon-Fri content schedule
 
-Format in clean markdown. Be specific with titles and hooks — not generic.
-Keep suggestions relevant to the user's actual skills and learnings.
-Reference any trending news items you received."""
+- **Monday:** 💼 LinkedIn — [topic]
+- **Tuesday:** ✍️ Medium — [topic]
+- **Wednesday:** 🎬 Reel — [topic]
+- **Thursday:** 💼 LinkedIn — [topic]
+- **Friday:** 🎬 Reel — [topic]
+
+## 💡 Execution Tips
+- Tip 1
+- Tip 2
+- Tip 3
+
+Keep suggestions specific to the user's actual skills and learnings.
+Reference trending news from the search results provided."""
 
 
 async def _search_latest_news() -> str:
     """Search DuckDuckGo for latest AI/ML/Tech news."""
+    logger.info("🔍 Starting DuckDuckGo search for latest AI/Tech news...")
+    
     try:
-        from langchain_community.tools import DuckDuckGoSearchRun
-        search = DuckDuckGoSearchRun()
+        from duckduckgo_search import DDGS
+        ddgs = DDGS()
         
         queries = [
             "latest AI news today 2026",
-            "Python LangChain LangGraph new features",
-            "trending tech topics for content creators",
+            "LangChain LangGraph Python new features 2026",
+            "trending AI ML topics content creators",
         ]
         
         results = []
         for q in queries:
             try:
-                result = search.run(q)
-                results.append(f"### Search: {q}\n{result}\n")
-            except Exception:
+                logger.info(f"  🔎 Searching: '{q}'")
+                search_results = ddgs.text(q, max_results=3)
+                for r in search_results:
+                    results.append(f"- **{r.get('title', '')}**: {r.get('body', '')} (Source: {r.get('href', '')})")
+                logger.info(f"  ✅ Got {len(search_results)} results for '{q}'")
+            except Exception as e:
+                logger.warning(f"  ⚠️ Search failed for '{q}': {e}")
                 continue
         
-        return "\n".join(results) if results else "No search results available."
+        if results:
+            news = "\n".join(results)
+            logger.info(f"📰 Total news items fetched: {len(results)}")
+            return news
+        else:
+            logger.warning("⚠️ No search results returned from DuckDuckGo")
+            return "No search results available."
+            
     except ImportError:
-        return "DuckDuckGo search not available (install duckduckgo-search package)."
+        logger.error("❌ duckduckgo-search package not installed!")
+        # Fallback to langchain community tool
+        try:
+            from langchain_community.tools import DuckDuckGoSearchRun
+            search = DuckDuckGoSearchRun()
+            logger.info("  Using langchain DuckDuckGoSearchRun fallback...")
+            result = search.run("latest AI ML Python news 2026")
+            logger.info(f"  ✅ Got fallback results")
+            return result
+        except Exception as e:
+            logger.error(f"  ❌ Fallback also failed: {e}")
+            return "Search unavailable."
     except Exception as e:
+        logger.error(f"❌ DuckDuckGo search error: {e}")
         return f"Search failed: {str(e)}"
 
 
 async def suggest_content(user_data: dict, user_prompt: str = "") -> str:
     """Suggest content topics based on user's profile, learnings, and latest AI/Tech news."""
+    logger.info("🤖 Starting content suggestion generation...")
+    
     data_summary = json.dumps(user_data, indent=2, default=str)
+    logger.info(f"  📊 User data prepared ({len(data_summary)} chars)")
     
     # Search for latest news
     news = await _search_latest_news()
+    logger.info(f"  📰 News data ready ({len(news)} chars)")
     
     user_message = f"""Based on this user's profile, current learnings, AND the latest AI/Tech news below, suggest content topics to post:
 
@@ -79,13 +159,18 @@ User Profile:
 
 The user posts on: LinkedIn, Medium, and creates Reels/Shorts about AI/ML, Python, LangChain, LangGraph, and tech topics.
 
---- LATEST AI/TECH NEWS (from web search) ---
+--- LATEST AI/TECH NEWS (from DuckDuckGo search) ---
 {news}
 --- END NEWS ---
 
 {f"Specific request: {user_prompt}" if user_prompt else "Suggest today's content ideas and a weekly calendar."}
 
 Be specific — give actual post titles, hooks, and outlines. Focus on AI, Python, LangChain, LangGraph, and related technologies.
-IMPORTANT: Reference at least 2-3 trending news items in your suggestions so the user can create timely, relevant content."""
+IMPORTANT: Reference at least 2-3 trending news items in your suggestions so the user can create timely, relevant content.
+IMPORTANT: Do NOT use markdown tables. Use headers, bullet points, and bold text for readability."""
     
-    return await quick_llm_call(SYSTEM_PROMPT, user_message, temperature=0.6)
+    logger.info("  🧠 Calling LLM for content suggestions...")
+    result = await quick_llm_call(SYSTEM_PROMPT, user_message, temperature=0.6)
+    logger.info(f"  ✅ Content suggestions generated ({len(result)} chars)")
+    
+    return result

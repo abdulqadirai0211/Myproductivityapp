@@ -3,10 +3,14 @@ import './Sidebar.css';
 
 const navItems = [
     { path: '/', label: 'Dashboard', icon: '📊' },
+    { path: '/habits', label: 'Habits', icon: '🔥' },
+    { path: '/standup', label: 'Standup', icon: '☀️' },
     { path: '/goals', label: 'Goals', icon: '🎯' },
     { path: '/tasks', label: 'Tasks', icon: '📋' },
-    { path: '/notes', label: 'Notes', icon: '📝' },
+    { path: '/schedule', label: 'Schedule', icon: '🕐' },
     { path: '/categories', label: 'Categories', icon: '📂' },
+    { path: '/income', label: 'Income', icon: '💰' },
+    { path: '/notes', label: 'Notes', icon: '📝' },
     { path: '/analytics', label: 'Analytics', icon: '📈' },
 ];
 

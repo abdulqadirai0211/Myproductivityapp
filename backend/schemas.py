@@ -381,3 +381,234 @@ class ContentPostResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+# --- Habit Schemas ---
+
+class HabitCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    description: str = ""
+    icon: str = "✅"
+    color: str = "#6366f1"
+    frequency: str = "daily"
+    target_value: float = 1.0
+    unit: str = "times"
+
+
+class HabitUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = None
+    icon: Optional[str] = None
+    color: Optional[str] = None
+    frequency: Optional[str] = None
+    target_value: Optional[float] = None
+    unit: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class HabitLogCreate(BaseModel):
+    habit_id: int
+    date: date
+    completed: bool = False
+    value: float = 0.0
+    notes: str = ""
+
+
+class HabitLogResponse(BaseModel):
+    id: int
+    habit_id: int
+    date: date
+    completed: bool
+    value: float
+    notes: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class HabitResponse(BaseModel):
+    id: int
+    name: str
+    description: str
+    icon: str
+    color: str
+    frequency: str
+    target_value: float
+    unit: str
+    is_active: bool
+    current_streak: int
+    best_streak: int
+    created_at: datetime
+    today_completed: bool = False
+    total_completions: int = 0
+
+    class Config:
+        from_attributes = True
+
+
+class HabitHeatmapDay(BaseModel):
+    date: date
+    completed: bool
+    value: float = 0.0
+
+
+# --- Standup Schemas ---
+
+class StandupCreate(BaseModel):
+    date: date
+    plan: str = ""
+    top_priorities: str = ""
+
+
+class StandupUpdate(BaseModel):
+    plan: Optional[str] = None
+    top_priorities: Optional[str] = None
+    reflection: Optional[str] = None
+    wins: Optional[str] = None
+    blockers: Optional[str] = None
+    tomorrow_focus: Optional[str] = None
+    mood: Optional[str] = None
+    energy: Optional[int] = Field(None, ge=1, le=5)
+    focus_score: Optional[int] = Field(None, ge=1, le=10)
+    overall_score: Optional[int] = Field(None, ge=1, le=10)
+
+
+class StandupResponse(BaseModel):
+    id: int
+    date: date
+    plan: str
+    top_priorities: str
+    reflection: str
+    wins: str
+    blockers: str
+    tomorrow_focus: str
+    mood: Optional[str]
+    energy: Optional[int]
+    focus_score: Optional[int]
+    overall_score: Optional[int]
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# --- Income Schemas ---
+
+class IncomeEntryCreate(BaseModel):
+    source: str = Field(..., min_length=1, max_length=100)
+    description: str = ""
+    amount: float
+    currency: str = "INR"
+    date: date
+    category: str = "freelance"
+    is_recurring: bool = False
+    client: Optional[str] = None
+    notes: str = ""
+
+
+class IncomeEntryUpdate(BaseModel):
+    source: Optional[str] = None
+    description: Optional[str] = None
+    amount: Optional[float] = None
+    currency: Optional[str] = None
+    date: Optional[date] = None
+    category: Optional[str] = None
+    is_recurring: Optional[bool] = None
+    client: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class IncomeEntryResponse(BaseModel):
+    id: int
+    source: str
+    description: str
+    amount: float
+    currency: str
+    date: date
+    category: str
+    is_recurring: bool
+    client: Optional[str]
+    notes: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class IncomeGoalCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=255)
+    target_amount: float
+    currency: str = "INR"
+    period: str
+    start_date: date
+    end_date: date
+
+
+class IncomeGoalResponse(BaseModel):
+    id: int
+    title: str
+    target_amount: float
+    currency: str
+    period: str
+    start_date: date
+    end_date: date
+    current_amount: float = 0.0
+    progress: float = 0.0
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class IncomeSummary(BaseModel):
+    total_this_month: float
+    total_this_year: float
+    by_category: dict
+    by_source: dict
+    monthly_trend: List[dict]
+
+
+# --- TimeBlock Schemas ---
+
+class TimeBlockCreate(BaseModel):
+    date: date
+    title: str = Field(..., min_length=1, max_length=255)
+    category: str = "work"
+    start_time: time
+    end_time: time
+    color: str = "#6366f1"
+    linked_habit_id: Optional[int] = None
+    notes: str = ""
+
+
+class TimeBlockUpdate(BaseModel):
+    title: Optional[str] = None
+    category: Optional[str] = None
+    start_time: Optional[time] = None
+    end_time: Optional[time] = None
+    color: Optional[str] = None
+    is_completed: Optional[bool] = None
+    actual_start: Optional[time] = None
+    actual_end: Optional[time] = None
+    notes: Optional[str] = None
+    linked_habit_id: Optional[int] = None
+
+
+class TimeBlockResponse(BaseModel):
+    id: int
+    date: date
+    title: str
+    category: str
+    start_time: time
+    end_time: time
+    color: str
+    is_completed: bool
+    actual_start: Optional[time]
+    actual_end: Optional[time]
+    notes: str
+    linked_habit_id: Optional[int]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

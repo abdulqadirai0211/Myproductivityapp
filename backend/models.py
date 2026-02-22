@@ -197,3 +197,122 @@ class ContentPost(Base):
     engagement = Column(Text, default="")  # likes, views, comments — JSON or free text
     notes = Column(Text, default="")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# --- P0: Habits & Streaks ---
+
+class Habit(Base):
+    """Recurring daily habits like Learning, Building, Posting."""
+    __tablename__ = "habits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False)
+    description = Column(Text, default="")
+    icon = Column(String(10), default="✅")
+    color = Column(String(7), default="#6366f1")
+    frequency = Column(String(20), default="daily")  # daily, weekdays, weekly
+    target_value = Column(Float, default=1.0)  # e.g., 2 hours, 1 post
+    unit = Column(String(50), default="times")  # times, hours, minutes, posts
+    is_active = Column(Boolean, default=True)
+    current_streak = Column(Integer, default=0)
+    best_streak = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    logs = relationship("HabitLog", back_populates="habit", cascade="all, delete-orphan")
+
+
+class HabitLog(Base):
+    """Daily check-in for a habit."""
+    __tablename__ = "habit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    habit_id = Column(Integer, ForeignKey("habits.id"), nullable=False)
+    date = Column(Date, nullable=False, default=date.today)
+    completed = Column(Boolean, default=False)
+    value = Column(Float, default=0.0)  # actual value achieved
+    notes = Column(Text, default="")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    habit = relationship("Habit", back_populates="logs")
+
+
+# --- P1: Daily Standup / Reflection ---
+
+class Standup(Base):
+    """Morning plan + evening reflection."""
+    __tablename__ = "standups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, unique=True, nullable=False, default=date.today)
+    # Morning
+    plan = Column(Text, default="")  # What I'll do today (markdown)
+    top_priorities = Column(Text, default="")  # JSON list of top 3
+    # Evening
+    reflection = Column(Text, default="")  # What I actually did
+    wins = Column(Text, default="")  # What went well
+    blockers = Column(Text, default="")  # What blocked me
+    tomorrow_focus = Column(Text, default="")  # What to focus on tomorrow
+    # Scores
+    mood = Column(String(20), nullable=True)
+    energy = Column(Integer, nullable=True)  # 1-5
+    focus_score = Column(Integer, nullable=True)  # 1-10
+    overall_score = Column(Integer, nullable=True)  # 1-10
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+# --- P1: Income Tracker ---
+
+class IncomeEntry(Base):
+    """Track income from various sources."""
+    __tablename__ = "income_entries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    source = Column(String(100), nullable=False)  # freelance, job, content, course, product
+    description = Column(Text, default="")
+    amount = Column(Float, nullable=False)
+    currency = Column(String(10), default="INR")
+    date = Column(Date, nullable=False, default=date.today)
+    category = Column(String(50), default="freelance")  # freelance, job, passive, content, other
+    is_recurring = Column(Boolean, default=False)
+    client = Column(String(255), nullable=True)
+    notes = Column(Text, default="")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class IncomeGoal(Base):
+    """Monthly/yearly income targets."""
+    __tablename__ = "income_goals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    target_amount = Column(Float, nullable=False)
+    currency = Column(String(10), default="INR")
+    period = Column(String(20), nullable=False)  # monthly, quarterly, yearly
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# --- P2: Time Blocking ---
+
+class TimeBlock(Base):
+    """Daily schedule time blocks."""
+    __tablename__ = "time_blocks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, nullable=False, default=date.today)
+    title = Column(String(255), nullable=False)
+    category = Column(String(50), default="work")  # learning, building, content, break, personal
+    start_time = Column(Time, nullable=False)
+    end_time = Column(Time, nullable=False)
+    color = Column(String(7), default="#6366f1")
+    is_completed = Column(Boolean, default=False)
+    actual_start = Column(Time, nullable=True)
+    actual_end = Column(Time, nullable=True)
+    notes = Column(Text, default="")
+    linked_habit_id = Column(Integer, ForeignKey("habits.id"), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

@@ -1,11 +1,14 @@
 """Shared LLM service using LangChain + Groq."""
 
 import os
+import logging
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 
 load_dotenv()
+
+logger = logging.getLogger("mytracker.llm")
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
@@ -16,6 +19,7 @@ def get_llm(temperature: float = 0.7, model: str = "openai/gpt-oss-120b"):
             "GROQ_API_KEY is not set. Please set it in your .env file. "
             "Get a free key at https://console.groq.com"
         )
+    logger.info(f"  🧠 LLM: model={model}, temp={temperature}")
     return ChatGroq(
         api_key=GROQ_API_KEY,
         model=model,
@@ -26,10 +30,13 @@ def get_llm(temperature: float = 0.7, model: str = "openai/gpt-oss-120b"):
 
 async def quick_llm_call(system_prompt: str, user_prompt: str, temperature: float = 0.3) -> str:
     """Make a quick LLM call and return the response text."""
+    logger.info(f"  📤 LLM call: prompt={len(user_prompt)} chars, system={len(system_prompt)} chars")
     llm = get_llm(temperature=temperature)
     messages = [
         SystemMessage(content=system_prompt),
         HumanMessage(content=user_prompt),
     ]
     response = await llm.ainvoke(messages)
+    logger.info(f"  📥 LLM response: {len(response.content)} chars")
     return response.content
+

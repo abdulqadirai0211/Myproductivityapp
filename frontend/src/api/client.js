@@ -56,6 +56,7 @@ export const aiAPI = {
     noteAssist: (prompt, context) => api.post('/ai/note-assist', { prompt, context }),
     chat: (prompt) => api.post('/ai/chat', { prompt }),
     contentSuggest: (prompt) => api.post('/ai/content-suggest', { prompt }),
+    coach: (prompt) => api.post('/ai/coach', { prompt }),
 };
 
 // Task Categories
@@ -77,6 +78,48 @@ export const contentAPI = {
     create: (data) => api.post('/categories/content/posts', data),
     update: (id, data) => api.put(`/categories/content/posts/${id}`, data),
     delete: (id) => api.delete(`/categories/content/posts/${id}`),
+};
+
+// Habits
+export const habitsAPI = {
+    list: () => api.get('/habits/'),
+    create: (data) => api.post('/habits/', data),
+    update: (id, data) => api.put(`/habits/${id}`, data),
+    delete: (id) => api.delete(`/habits/${id}`),
+    checkIn: (data) => api.post('/habits/check-in', data),
+    heatmap: (id, days) => api.get(`/habits/${id}/heatmap`, { params: { days } }),
+    today: () => api.get('/habits/today'),
+};
+
+// Standups
+export const standupsAPI = {
+    list: (limit) => api.get('/standups/', { params: { limit } }),
+    today: () => api.get('/standups/today'),
+    get: (d) => api.get(`/standups/${d}`),
+    create: (data) => api.post('/standups/', data),
+    update: (d, data) => api.put(`/standups/${d}`, data),
+    weekly: () => api.get('/standups/weekly-summary'),
+};
+
+// Income
+export const incomeAPI = {
+    entries: (params) => api.get('/income/entries', { params }),
+    createEntry: (data) => api.post('/income/entries', data),
+    updateEntry: (id, data) => api.put(`/income/entries/${id}`, data),
+    deleteEntry: (id) => api.delete(`/income/entries/${id}`),
+    goals: () => api.get('/income/goals'),
+    createGoal: (data) => api.post('/income/goals', data),
+    deleteGoal: (id) => api.delete(`/income/goals/${id}`),
+    summary: () => api.get('/income/summary'),
+};
+
+// Time Blocks
+export const timeBlocksAPI = {
+    list: (d) => api.get('/time-blocks/', { params: { block_date: d } }),
+    create: (data) => api.post('/time-blocks/', data),
+    update: (id, data) => api.put(`/time-blocks/${id}`, data),
+    delete: (id) => api.delete(`/time-blocks/${id}`),
+    complete: (id) => api.post(`/time-blocks/${id}/complete`),
 };
 
 export default api;

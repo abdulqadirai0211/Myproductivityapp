@@ -1,0 +1,120 @@
+.standup-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.standup-layout.evening {
+    grid-template-columns: 1fr;
+}
+
+.standup-section {
+    padding: 20px;
+}
+
+.standup-textarea {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.88rem;
+    resize: vertical;
+    transition: var(--transition);
+}
+
+.standup-textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.auto-save-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+    text-align: right;
+}
+
+.scores-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.score-item label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.mood-picker {
+    display: flex;
+    gap: 8px;
+}
+
+.mood-btn {
+    font-size: 1.4rem;
+    background: var(--bg-input);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.mood-btn:hover {
+    transform: scale(1.2);
+}
+
+.mood-btn.active {
+    border-color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.standup-history {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-card {
+    padding: 16px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.history-date {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.history-scores {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.history-field {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+    .standup-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .scores-grid {
+        grid-template-columns: 1fr;
+    }
+}

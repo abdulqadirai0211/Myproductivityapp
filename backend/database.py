@@ -3,17 +3,21 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
 
+logger = logging.getLogger("mytracker.db")
+
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./mytracker.db")
 
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False},  # SQLite specific
-    echo=False,
-)
+# Build engine args based on DB type
+engine_kwargs = {"echo": False}
+if DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -32,4 +36,7 @@ def get_db():
 def init_db():
     """Create all tables."""
     from models import Base as ModelsBase  # noqa: F401
+    db_type = "PostgreSQL" if "postgresql" in DATABASE_URL else "SQLite"
+    logger.info(f"  🗄️  Database: {db_type}")
+    logger.info(f"  📍 URL: {DATABASE_URL[:50]}...")
     ModelsBase.metadata.create_all(bind=engine)
