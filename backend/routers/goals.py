@@ -27,7 +27,7 @@ def _goal_to_response(goal: Goal) -> GoalResponse:
         target_date=goal.target_date,
         color=goal.color,
         created_at=goal.created_at,
-        updated_at=goal.updated_at,
+        updated_at=goal,
         task_count=task_count,
         completed_task_count=completed_count,
     )
@@ -52,7 +52,7 @@ def list_goals(
 @router.get("/{goal_id}", response_model=GoalResponse)
 def get_goal(goal_id: int, db: Session = Depends(get_db)):
     """Get a single goal by ID."""
-    goal = db.query(Goal).filter(Goal.id == goal_id).first()
+    goal = db.query(Goal).filter(Goal.id == goal_id)
     if not goal:
         raise HTTPException(status_code=404, detail="Goal not found")
     return _goal_to_response(goal)
@@ -71,7 +71,7 @@ def create_goal(goal_data: GoalCreate, db: Session = Depends(get_db)):
 @router.put("/{goal_id}", response_model=GoalResponse)
 def update_goal(goal_id: int, goal_data: GoalUpdate, db: Session = Depends(get_db)):
     """Update an existing goal."""
-    goal = db.query(Goal).filter(Goal.id == goal_id).first()
+    goal = db.query(Goal).filter(Goal.id == goal_id)
     if not goal:
         raise HTTPException(status_code=404, detail="Goal not found")
     
